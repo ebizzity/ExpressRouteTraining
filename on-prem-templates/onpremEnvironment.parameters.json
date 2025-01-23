@@ -1,0 +1,57 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vnetName": {
+      "value": "onprem-vnet"
+    },
+    "vnetIpPrefix": {
+      "value": "10.20.0.0/22"
+    },
+    "bastionSubnetIpPrefix": {
+      "value": "10.20.1.0/26"
+    },
+    "gatewaySubnetIpPrefix": {
+      "value": "10.20.2.0/26"
+    },
+    "bastionHostName": {
+      "value": "bastionhost1"
+    },
+    "vpnGatewayName": {
+      "value": "vpngw1"
+    },
+    "gatewaySku": {
+      "value": "VpnGw1"
+    },
+    "vmSubnetName": {
+      "value": "subnet1"
+    },
+    "vmSubnetIpPrefix": {
+      "value": "10.20.3.0/26"
+    },
+    "vmNsgName": {
+      "value": "vmNsg"
+    },
+    "vpnType": {
+      "value": "RouteBased"
+    },
+    "adminUsername": {
+      "value": "vmadmin"
+    },
+    "adminPassword": {
+      "value": "Pa$$word1234"
+    },
+    "OSVersion": {
+      "value": "2022-datacenter-azure-edition"
+    },
+    "vmSize": {
+      "value": "Standard_B2als_v2"
+    },
+    "vmName": {
+      "value": "simple-vm"
+    },
+    "securityType": {
+      "value": "TrustedLaunch"
+    }
+  }
+}
