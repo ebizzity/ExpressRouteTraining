@@ -36,10 +36,10 @@
       "value": "RouteBased"
     },
     "adminUsername": {
-      "value": "vmadmin"
+      "value": ""
     },
     "adminPassword": {
-      "value": "Pa$$word1234"
+      "value": ""
     },
     "OSVersion": {
       "value": "2022-datacenter-azure-edition"

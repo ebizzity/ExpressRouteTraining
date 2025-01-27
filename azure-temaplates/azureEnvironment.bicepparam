@@ -1,0 +1,30 @@
+using './azureEnvironment.bicep'
+
+param vNetHubName = 'vnet-hub'
+param vNetSpokeName = 'vnet-spoke'
+param vmName = 'vm1'
+param vmSize = 'Standard_B2als_v2'
+param adminUsername = ''
+param adminPassword = 'EnterYourPwd'
+param gatewaySubnetIpPrefix = '10.20.2.0/26'
+param bastionHostName = 'bastion2'
+param OSVersion = '2022-datacenter-azure-edition'
+param erGatewayName = 'er-gw'
+param gatewaySku = 'HighPerformance'
+param vNetHubPrefix = '10.0.0.0/16'
+param subnetBastionPrefix = '10.0.0.0/26'
+param vNetSpokePrefix = '10.1.0.0/16'
+param subnetSpokeName = 'Subnet-1'
+param subnetSpokePrefix = '10.1.0.0/24'
+param securityType = 'TrustedLaunch'
+param erpeeringLocation = 'Washington DC'
+param erCircuitName = 'er-ckt01'
+param serviceProviderName = 'Equinix'
+param erSKU_Tier = 'Premium'
+param erSKU_Family = 'MeteredData'
+param bandwidthInMbps = 50
+param peerASN = 65001
+param primaryPeerAddressPrefix = '192.168.10.16/30'
+param secondaryPeerAddressPrefix = '192.168.10.20/30'
+param vlanId = 100
+
