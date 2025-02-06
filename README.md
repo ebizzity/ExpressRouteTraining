@@ -45,7 +45,7 @@ todo put image here from Visio
     ```
     megaport-mve-97884#show ip int brief
     Interface              IP-Address      OK? Method Status                Protocol
-    GigabitEthernet1       162.43.148.51   YES DHCP   up                    up
+    GigabitEthernet1       x.x.x.x         YES DHCP   up                    up
     GigabitEthernet2       unassigned      YES unset  administratively down down
     GigabitEthernet3       unassigned      YES unset  administratively down down
     ```
@@ -68,7 +68,7 @@ todo put image here from Visio
 
     megaport-mve-97884#show ip int brief
     Interface              IP-Address      OK? Method Status                Protocol
-    GigabitEthernet1       162.43.148.51   YES DHCP   up                    up
+    GigabitEthernet1       x.x.x.x         YES DHCP   up                    up
     GigabitEthernet2       172.16.16.1     YES manual up                    up
     GigabitEthernet3       172.16.16.5     YES manual up                    up
     megaport-mve-97884#
