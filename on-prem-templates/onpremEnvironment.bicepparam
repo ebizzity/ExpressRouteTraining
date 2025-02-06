@@ -16,6 +16,6 @@ param adminUsername = 'azureuser'
 param adminPassword = 'Ch@ngeMe1234!'
 param OSVersion = '2022-datacenter-azure-edition'
 param vmSize = 'Standard_B2als_v2'
-param vmName = 'simple-vm'
+param vmName = 'on-prem-vm'
 param securityType = 'TrustedLaunch'
 

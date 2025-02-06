@@ -14,10 +14,10 @@ param bastionSubnetIpPrefix string = '10.20.1.0/26'
 param gatewaySubnetIpPrefix string = '10.20.2.0/26'
 
 @description('Name of Azure Bastion resource')
-param bastionHostName string
+param bastionHostName string = 'bastionhost1'
 
 @description('Name of VPN Gateway resource')
-param vpnGatewayName string
+param vpnGatewayName string = 'vpngw1'
 
 @allowed([
   'VpnGw1'
@@ -45,12 +45,12 @@ param vmNsgName string = 'vmNsg'
 param vpnType string = 'RouteBased'
 
 @description('Username for the Virtual Machine.')
-param adminUsername string
+param adminUsername string = 'azureuser'
 
 @description('Password for the Virtual Machine.')
 @minLength(12)
 @secure()
-param adminPassword string
+param adminPassword string 
 
 @description('The Windows version for the VM. This will pick a fully patched image of this given Windows version.')
 @allowed([
@@ -84,7 +84,7 @@ param OSVersion string = '2022-datacenter-azure-edition'
 param vmSize string = 'Standard_B2als_v2'
 
 @description('Name of the virtual machine.')
-param vmName string = 'simple-vm'
+param vmName string = 'on-prem-vm'
 
 @description('Security Type of the Virtual Machine.')
 @allowed([

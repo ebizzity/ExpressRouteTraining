@@ -2,7 +2,7 @@ using './azureEnvironment.bicep'
 
 param vNetHubName = 'vnet-hub'
 param vNetSpokeName = 'vnet-spoke'
-param vmName = 'vm1'
+param vmName = 'Azure-vm1'
 param vmSize = 'Standard_B2als_v2'
 param adminUsername = 'azureuser'
 param adminPassword = 'Ch@ngeMe1234!'

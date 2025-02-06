@@ -11,12 +11,12 @@ todo put image here from Visio
 **Step #1 - Deploy Simulated on-prem and Azure environments via templates**
   
 1. On-Prem
-   1. Click to Deploy to Azure - 
-   2. Click to Deploy to Azure Government
-
+   
+   [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Febizzity%2FExpressRouteTraining%2Frefs%2Fheads%2Fmain%2Fon-prem-templates%2FonpremEnvironment.json)
+ 
 2. Azure
-   1. Click to Deploy to Azure - [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Febizzity%2FExpressRouteTraining%2Frefs%2Fheads%2Fmain%2Fazure-templates%2FazureEnvironment.json)
-   2. Click to Deploy to Azure Government
+   
+   [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Febizzity%2FExpressRouteTraining%2Frefs%2Fheads%2Fmain%2Fazure-templates%2FazureEnvironment.json)
 
 **Step #2 - Create Megaport ExpressRoute and MVE**
 

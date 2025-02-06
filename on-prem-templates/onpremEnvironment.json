@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "8472412183320473770"
+      "templateHash": "17664746027183961876"
     }
   },
   "parameters": {
@@ -46,12 +46,14 @@
     },
     "bastionHostName": {
       "type": "string",
+      "defaultValue": "bastionhost1",
       "metadata": {
         "description": "Name of Azure Bastion resource"
       }
     },
     "vpnGatewayName": {
       "type": "string",
+      "defaultValue": "vpngw1",
       "metadata": {
         "description": "Name of VPN Gateway resource"
       }
@@ -101,6 +103,7 @@
     },
     "adminUsername": {
       "type": "string",
+      "defaultValue": "azureuser",
       "metadata": {
         "description": "Username for the Virtual Machine."
       }
@@ -153,7 +156,7 @@
     },
     "vmName": {
       "type": "string",
-      "defaultValue": "simple-vm",
+      "defaultValue": "on-prem-vm",
       "metadata": {
         "description": "Name of the virtual machine."
       }

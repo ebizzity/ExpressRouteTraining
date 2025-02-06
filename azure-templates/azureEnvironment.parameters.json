@@ -9,7 +9,7 @@
       "value": "vnet-spoke"
     },
     "vmName": {
-      "value": "vm1"
+      "value": "Azure-vm1"
     },
     "vmSize": {
       "value": "Standard_B2als_v2"

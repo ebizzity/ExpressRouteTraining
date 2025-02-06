@@ -8,13 +8,13 @@ param vNetHubName string = 'vnet-hub'
 param vNetSpokeName string = 'vnet-spoke'
 
 @description('The name of the Virtual Machine')
-param vmName string = 'vm1'
+param vmName string = 'Azure-vm1'
 
 @description('The size of the Virtual Machine')
 param vmSize string = 'Standard_B2als_v2'
 
 @description('The administrator username')
-param adminUsername string
+param adminUsername string = 'azureuser'
 
 @description('The administrator password')
 @minLength(12)
@@ -22,7 +22,7 @@ param adminUsername string
 param adminPassword string
 
 @description('Gateway subnet IP prefix MUST be within vnet IP prefix address space')
-param gatewaySubnetIpPrefix string 
+param gatewaySubnetIpPrefix string = '10.1.0.0/26'
 
 @description('The name of the Azure Bastion host')
 param bastionHostName string = 'bastion2'
@@ -67,13 +67,13 @@ param erGatewayName string = 'er-gw'
   'ErGw2AZ'
   'ErGw3AZ'
 ])
-param gatewaySku string = 'HighPerformance'
+param gatewaySku string = 'Standard'
 
-param vNetHubPrefix string = '10.0.0.0/16'
-param subnetBastionPrefix string = '10.0.0.0/26'
-param vNetSpokePrefix string = '10.1.0.0/16'
+param vNetHubPrefix string = '10.1.0.0/22'
+param subnetBastionPrefix string = '10.1.0.64/26'
+param vNetSpokePrefix string = '10.1.4.0/24'
 param subnetSpokeName string = 'Subnet-1'
-param subnetSpokePrefix string = '10.1.0.0/24'
+param subnetSpokePrefix string = '10.1.4.0/24'
 
 @description('Security Type of the Virtual Machine.')
 @allowed([
@@ -89,14 +89,14 @@ param erpeeringLocation string = 'Washington DC'
 param erCircuitName string = 'er-ckt01'
 
 @description('Name of the ExpressRoute provider')
-param serviceProviderName string = 'Equinix'
+param serviceProviderName string = 'Megaport'
 
 @description('Tier ExpressRoute circuit')
 @allowed([
   'Premium'
   'Standard'
 ])
-param erSKU_Tier string = 'Premium'
+param erSKU_Tier string = 'Standard'
 
 @description('Billing model ExpressRoute circuit')
 @allowed([
@@ -122,13 +122,13 @@ param bandwidthInMbps int = 50
 param peerASN int = 65001
 
 @description('point-to-point network prefix of primary link between the customer edge router and MSEE router')
-param primaryPeerAddressPrefix string = '192.168.10.16/30'
+param primaryPeerAddressPrefix string = '172.16.16.0/30'
 
 @description('point-to-point network prefix of secondary link between the customer edge router and MSEE router')
-param secondaryPeerAddressPrefix string = '192.168.10.20/30'
+param secondaryPeerAddressPrefix string = '172.16.16.4/30'
 
 @description('VLAN Id used between the customer edge routers and MSEE routers. primary and secondary link have the same VLAN Id')
-param vlanId int = 100
+param vlanId int = 800
 
 var securityProfileJson = {
   uefiSettings: {

@@ -48,7 +48,7 @@
       "value": "Standard_B2als_v2"
     },
     "vmName": {
-      "value": "simple-vm"
+      "value": "on-prem-vm"
     },
     "securityType": {
       "value": "TrustedLaunch"
