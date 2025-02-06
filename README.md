@@ -15,7 +15,7 @@ todo put image here from Visio
    2. Click to Deploy to Azure Government
 
 2. Azure
-   1. Click to Deploy to Azure - [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Febizzity%2FExpressRouteTraining%2Frefs%2Fheads%2Fmain%2Fazure-temaplates%2FazureEnvironment.json)
+   1. Click to Deploy to Azure - [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Febizzity%2FExpressRouteTraining%2Frefs%2Fheads%2Fmain%2Fazure-templates%2FazureEnvironment.json)
    2. Click to Deploy to Azure Government
 
 **Step #2 - Create Megaport ExpressRoute and MVE**
