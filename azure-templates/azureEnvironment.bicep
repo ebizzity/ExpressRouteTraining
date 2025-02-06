@@ -22,7 +22,7 @@ param adminUsername string
 param adminPassword string
 
 @description('Gateway subnet IP prefix MUST be within vnet IP prefix address space')
-param gatewaySubnetIpPrefix string = '10.20.2.0/26'
+param gatewaySubnetIpPrefix string 
 
 @description('The name of the Azure Bastion host')
 param bastionHostName string = 'bastion2'
@@ -207,6 +207,9 @@ resource vNetHubSpokePeering 'Microsoft.Network/virtualNetworks/virtualNetworkPe
       id: vNetSpoke.id
     }
   }
+  dependsOn: [
+    gateway
+  ]
 }
 
 resource vNetSpokeHubPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-07-01' = {
@@ -221,6 +224,9 @@ resource vNetSpokeHubPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPe
       id: vNetHub.id
     }
   }
+  dependsOn: [
+    gateway
+  ]
 }
 
 resource bastionPublicIP 'Microsoft.Network/publicIPAddresses@2022-07-01' = {
@@ -365,7 +371,7 @@ resource erCircuit 'Microsoft.Network/expressRouteCircuits@2023-09-01' = {
   }
 }
 
-resource peering 'Microsoft.Network/expressRouteCircuits/peerings@2023-09-01' = {
+/* resource peering 'Microsoft.Network/expressRouteCircuits/peerings@2023-09-01' = {
   parent: erCircuit
   name: 'AzurePrivatePeering'
   properties: {
@@ -375,7 +381,7 @@ resource peering 'Microsoft.Network/expressRouteCircuits/peerings@2023-09-01' = 
     secondaryPeerAddressPrefix: secondaryPeerAddressPrefix
     vlanId: vlanId
   }
-}
+} */
 
 resource nsg 'Microsoft.Network/networkSecurityGroups@2024-05-01' = {
   name: nsgName

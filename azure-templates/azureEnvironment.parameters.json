@@ -1,0 +1,87 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vNetHubName": {
+      "value": "vnet-hub"
+    },
+    "vNetSpokeName": {
+      "value": "vnet-spoke"
+    },
+    "vmName": {
+      "value": "vm1"
+    },
+    "vmSize": {
+      "value": "Standard_B2als_v2"
+    },
+    "adminUsername": {
+      "value": "azureuser"
+    },
+    "adminPassword": {
+      "value": "Ch@ngeMe1234!"
+    },
+    "gatewaySubnetIpPrefix": {
+      "value": "10.1.0.0/26"
+    },
+    "bastionHostName": {
+      "value": "bastion2"
+    },
+    "OSVersion": {
+      "value": "2022-datacenter-azure-edition"
+    },
+    "erGatewayName": {
+      "value": "er-gw"
+    },
+    "gatewaySku": {
+      "value": "Standard"
+    },
+    "vNetHubPrefix": {
+      "value": "10.1.0.0/22"
+    },
+    "subnetBastionPrefix": {
+      "value": "10.1.0.64/26"
+    },
+    "vNetSpokePrefix": {
+      "value": "10.1.4.0/24"
+    },
+    "subnetSpokeName": {
+      "value": "Subnet-1"
+    },
+    "subnetSpokePrefix": {
+      "value": "10.1.4.0/24"
+    },
+    "securityType": {
+      "value": "TrustedLaunch"
+    },
+    "erpeeringLocation": {
+      "value": "Washington DC"
+    },
+    "erCircuitName": {
+      "value": "er-ckt01"
+    },
+    "serviceProviderName": {
+      "value": "Megaport"
+    },
+    "erSKU_Tier": {
+      "value": "Standard"
+    },
+    "erSKU_Family": {
+      "value": "MeteredData"
+    },
+    "bandwidthInMbps": {
+      "value": 50
+    },
+    "peerASN": {
+      "value": 65001
+    },
+    "primaryPeerAddressPrefix": {
+      "value": "172.16.16.0/30"
+    },
+    "secondaryPeerAddressPrefix": {
+      "value": "172.16.16.4/30"
+    },
+    "vlanId": {
+      "value": 800
+    }
+  }
+}

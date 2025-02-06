@@ -1,0 +1,558 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.33.93.31351",
+      "templateHash": "9778488654959533945"
+    }
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "The location of all resources"
+      }
+    },
+    "vNetHubName": {
+      "type": "string",
+      "defaultValue": "vnet-hub",
+      "metadata": {
+        "description": "The name of the Hub vNet"
+      }
+    },
+    "vNetSpokeName": {
+      "type": "string",
+      "defaultValue": "vnet-spoke",
+      "metadata": {
+        "description": "The name of the Spoke vNet"
+      }
+    },
+    "vmName": {
+      "type": "string",
+      "defaultValue": "vm1",
+      "metadata": {
+        "description": "The name of the Virtual Machine"
+      }
+    },
+    "vmSize": {
+      "type": "string",
+      "defaultValue": "Standard_B2als_v2",
+      "metadata": {
+        "description": "The size of the Virtual Machine"
+      }
+    },
+    "adminUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "The administrator username"
+      }
+    },
+    "adminPassword": {
+      "type": "securestring",
+      "minLength": 12,
+      "metadata": {
+        "description": "The administrator password"
+      }
+    },
+    "gatewaySubnetIpPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Gateway subnet IP prefix MUST be within vnet IP prefix address space"
+      }
+    },
+    "bastionHostName": {
+      "type": "string",
+      "defaultValue": "bastion2",
+      "metadata": {
+        "description": "The name of the Azure Bastion host"
+      }
+    },
+    "OSVersion": {
+      "type": "string",
+      "defaultValue": "2022-datacenter-azure-edition",
+      "allowedValues": [
+        "2016-datacenter-gensecond",
+        "2016-datacenter-server-core-g2",
+        "2016-datacenter-server-core-smalldisk-g2",
+        "2016-datacenter-smalldisk-g2",
+        "2016-datacenter-with-containers-g2",
+        "2016-datacenter-zhcn-g2",
+        "2019-datacenter-core-g2",
+        "2019-datacenter-core-smalldisk-g2",
+        "2019-datacenter-core-with-containers-g2",
+        "2019-datacenter-core-with-containers-smalldisk-g2",
+        "2019-datacenter-gensecond",
+        "2019-datacenter-smalldisk-g2",
+        "2019-datacenter-with-containers-g2",
+        "2019-datacenter-with-containers-smalldisk-g2",
+        "2019-datacenter-zhcn-g2",
+        "2022-datacenter-azure-edition",
+        "2022-datacenter-azure-edition-core",
+        "2022-datacenter-azure-edition-core-smalldisk",
+        "2022-datacenter-azure-edition-smalldisk",
+        "2022-datacenter-core-g2",
+        "2022-datacenter-core-smalldisk-g2",
+        "2022-datacenter-g2",
+        "2022-datacenter-smalldisk-g2"
+      ],
+      "metadata": {
+        "description": "The Windows version for the VM. This will pick a fully patched image of this given Windows version."
+      }
+    },
+    "erGatewayName": {
+      "type": "string",
+      "defaultValue": "er-gw",
+      "metadata": {
+        "description": "Name of ER Gateway resource"
+      }
+    },
+    "gatewaySku": {
+      "type": "string",
+      "defaultValue": "HighPerformance",
+      "allowedValues": [
+        "Standard",
+        "HighPerformance",
+        "UltraPerformance",
+        "ErGw1AZ",
+        "ErGw2AZ",
+        "ErGw3AZ"
+      ],
+      "metadata": {
+        "description": "ExpressRoute Gateway SKU"
+      }
+    },
+    "vNetHubPrefix": {
+      "type": "string",
+      "defaultValue": "10.0.0.0/16"
+    },
+    "subnetBastionPrefix": {
+      "type": "string",
+      "defaultValue": "10.0.0.0/26"
+    },
+    "vNetSpokePrefix": {
+      "type": "string",
+      "defaultValue": "10.1.0.0/16"
+    },
+    "subnetSpokeName": {
+      "type": "string",
+      "defaultValue": "Subnet-1"
+    },
+    "subnetSpokePrefix": {
+      "type": "string",
+      "defaultValue": "10.1.0.0/24"
+    },
+    "securityType": {
+      "type": "string",
+      "defaultValue": "TrustedLaunch",
+      "allowedValues": [
+        "Standard",
+        "TrustedLaunch"
+      ],
+      "metadata": {
+        "description": "Security Type of the Virtual Machine."
+      }
+    },
+    "erpeeringLocation": {
+      "type": "string",
+      "defaultValue": "Washington DC",
+      "metadata": {
+        "description": "ExpressRoute peering location"
+      }
+    },
+    "erCircuitName": {
+      "type": "string",
+      "defaultValue": "er-ckt01",
+      "metadata": {
+        "description": "Name of the ExpressRoute circuit"
+      }
+    },
+    "serviceProviderName": {
+      "type": "string",
+      "defaultValue": "Equinix",
+      "metadata": {
+        "description": "Name of the ExpressRoute provider"
+      }
+    },
+    "erSKU_Tier": {
+      "type": "string",
+      "defaultValue": "Premium",
+      "allowedValues": [
+        "Premium",
+        "Standard"
+      ],
+      "metadata": {
+        "description": "Tier ExpressRoute circuit"
+      }
+    },
+    "erSKU_Family": {
+      "type": "string",
+      "defaultValue": "MeteredData",
+      "allowedValues": [
+        "MeteredData",
+        "UnlimitedData"
+      ],
+      "metadata": {
+        "description": "Billing model ExpressRoute circuit"
+      }
+    },
+    "bandwidthInMbps": {
+      "type": "int",
+      "defaultValue": 50,
+      "allowedValues": [
+        50,
+        100,
+        200,
+        500,
+        1000,
+        2000,
+        5000,
+        10000
+      ],
+      "metadata": {
+        "description": "Bandwidth ExpressRoute circuit"
+      }
+    },
+    "peerASN": {
+      "type": "int",
+      "defaultValue": 65001,
+      "metadata": {
+        "description": "autonomous system number used to create private peering between the customer edge router and MSEE routers"
+      }
+    },
+    "primaryPeerAddressPrefix": {
+      "type": "string",
+      "defaultValue": "192.168.10.16/30",
+      "metadata": {
+        "description": "point-to-point network prefix of primary link between the customer edge router and MSEE router"
+      }
+    },
+    "secondaryPeerAddressPrefix": {
+      "type": "string",
+      "defaultValue": "192.168.10.20/30",
+      "metadata": {
+        "description": "point-to-point network prefix of secondary link between the customer edge router and MSEE router"
+      }
+    },
+    "vlanId": {
+      "type": "int",
+      "defaultValue": 100,
+      "metadata": {
+        "description": "VLAN Id used between the customer edge routers and MSEE routers. primary and secondary link have the same VLAN Id"
+      }
+    }
+  },
+  "variables": {
+    "securityProfileJson": {
+      "uefiSettings": {
+        "secureBootEnabled": true,
+        "vTpmEnabled": true
+      },
+      "securityType": "[parameters('securityType')]"
+    },
+    "extensionName": "GuestAttestation",
+    "extensionPublisher": "Microsoft.Azure.Security.WindowsAttestation",
+    "extensionVersion": "1.0",
+    "maaTenantName": "GuestAttestation",
+    "maaEndpoint": "[substring('emptyString', 0, 0)]",
+    "gatewayPublicIpAddressName": "[format('{0}-pip', parameters('erGatewayName'))]",
+    "erSKU_Name": "[format('{0}_{1}', parameters('erSKU_Tier'), parameters('erSKU_Family'))]",
+    "nsgName": "nsg"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2022-07-01",
+      "name": "[parameters('vNetHubName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[parameters('vNetHubPrefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "AzureBastionSubnet",
+            "properties": {
+              "addressPrefix": "[parameters('subnetBastionPrefix')]"
+            }
+          },
+          {
+            "name": "GatewaySubnet",
+            "properties": {
+              "addressPrefix": "[parameters('gatewaySubnetIpPrefix')]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2022-07-01",
+      "name": "[parameters('vNetSpokeName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[parameters('vNetSpokePrefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[parameters('subnetSpokeName')]",
+            "properties": {
+              "addressPrefix": "[parameters('subnetSpokePrefix')]",
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
+              }
+            }
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2022-07-01",
+      "name": "[format('{0}/{1}', parameters('vNetHubName'), format('peering-to-{0}', parameters('vNetSpokeName')))]",
+      "properties": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": true,
+        "useRemoteGateways": false,
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('vNetSpokeName'))]"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworkGateways', parameters('erGatewayName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', parameters('vNetHubName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', parameters('vNetSpokeName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2022-07-01",
+      "name": "[format('{0}/{1}', parameters('vNetSpokeName'), format('peering-to-{0}', parameters('vNetHubName')))]",
+      "properties": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": true,
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('vNetHubName'))]"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworkGateways', parameters('erGatewayName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', parameters('vNetHubName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', parameters('vNetSpokeName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2022-07-01",
+      "name": "[format('{0}-pip', parameters('bastionHostName'))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "publicIPAllocationMethod": "Static"
+      },
+      "sku": {
+        "name": "Standard"
+      }
+    },
+    {
+      "type": "Microsoft.Network/bastionHosts",
+      "apiVersion": "2022-07-01",
+      "name": "[parameters('bastionHostName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "properties": {
+              "subnet": {
+                "id": "[format('{0}/subnets/AzureBastionSubnet', resourceId('Microsoft.Network/virtualNetworks', parameters('vNetHubName')))]"
+              },
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', format('{0}-pip', parameters('bastionHostName')))]"
+              },
+              "privateIPAllocationMethod": "Dynamic"
+            },
+            "name": "ipconfig1"
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses', format('{0}-pip', parameters('bastionHostName')))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', parameters('vNetHubName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2022-07-01",
+      "name": "[format('{0}-nic-01', parameters('vmName'))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[format('{0}/subnets/{1}', resourceId('Microsoft.Network/virtualNetworks', parameters('vNetSpokeName')), parameters('subnetSpokeName'))]"
+              }
+            }
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', parameters('vNetSpokeName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2022-08-01",
+      "name": "[parameters('vmName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[parameters('vmSize')]"
+        },
+        "osProfile": {
+          "computerName": "[parameters('vmName')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "MicrosoftWindowsServer",
+            "offer": "WindowsServer",
+            "sku": "[parameters('OSVersion')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "managedDisk": {
+              "storageAccountType": "StandardSSD_LRS"
+            },
+            "createOption": "FromImage"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', format('{0}-nic-01', parameters('vmName')))]"
+            }
+          ]
+        },
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": false
+          }
+        },
+        "securityProfile": "[if(equals(parameters('securityType'), 'TrustedLaunch'), variables('securityProfileJson'), null())]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces', format('{0}-nic-01', parameters('vmName')))]"
+      ]
+    },
+    {
+      "condition": "[and(equals(parameters('securityType'), 'TrustedLaunch'), and(equals(variables('securityProfileJson').uefiSettings.secureBootEnabled, true()), equals(variables('securityProfileJson').uefiSettings.vTpmEnabled, true())))]",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "apiVersion": "2022-03-01",
+      "name": "[format('{0}/{1}', parameters('vmName'), variables('extensionName'))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "publisher": "[variables('extensionPublisher')]",
+        "type": "[variables('extensionName')]",
+        "typeHandlerVersion": "[variables('extensionVersion')]",
+        "autoUpgradeMinorVersion": true,
+        "enableAutomaticUpgrade": true,
+        "settings": {
+          "AttestationConfig": {
+            "MaaSettings": {
+              "maaEndpoint": "[variables('maaEndpoint')]",
+              "maaTenantName": "[variables('maaTenantName')]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2022-01-01",
+      "name": "[variables('gatewayPublicIpAddressName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Standard"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "Static"
+      }
+    },
+    {
+      "type": "Microsoft.Network/expressRouteCircuits",
+      "apiVersion": "2023-09-01",
+      "name": "[parameters('erCircuitName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[variables('erSKU_Name')]",
+        "tier": "[parameters('erSKU_Tier')]",
+        "family": "[parameters('erSKU_Family')]"
+      },
+      "properties": {
+        "serviceProviderProperties": {
+          "serviceProviderName": "[parameters('serviceProviderName')]",
+          "peeringLocation": "[parameters('erpeeringLocation')]",
+          "bandwidthInMbps": "[parameters('bandwidthInMbps')]"
+        },
+        "allowClassicOperations": false
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2024-05-01",
+      "name": "[variables('nsgName')]",
+      "location": "[parameters('location')]"
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworkGateways",
+      "apiVersion": "2023-09-01",
+      "name": "[parameters('erGatewayName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vNetHubName'), 'GatewaySubnet')]"
+              },
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('gatewayPublicIpAddressName'))]"
+              }
+            },
+            "name": "gwIPconf"
+          }
+        ],
+        "gatewayType": "ExpressRoute",
+        "sku": {
+          "name": "[parameters('gatewaySku')]",
+          "tier": "[parameters('gatewaySku')]"
+        },
+        "vpnType": "RouteBased"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses', variables('gatewayPublicIpAddressName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', parameters('vNetHubName'))]"
+      ]
+    }
+  ]
+}
