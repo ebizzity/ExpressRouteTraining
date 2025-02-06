@@ -21,9 +21,6 @@ param adminUsername string = 'azureuser'
 @secure()
 param adminPassword string
 
-@description('Gateway subnet IP prefix MUST be within vnet IP prefix address space')
-param gatewaySubnetIpPrefix string = '10.1.0.0/26'
-
 @description('The name of the Azure Bastion host')
 param bastionHostName string = 'bastion2'
 
@@ -55,6 +52,21 @@ param bastionHostName string = 'bastion2'
 ])
 param OSVersion string = '2022-datacenter-azure-edition'
 
+param vNetHubPrefix string = '10.1.0.0/22'
+@description('Gateway subnet IP prefix MUST be within vnet IP prefix address space')
+param gatewaySubnetIpPrefix string = '10.1.0.0/26'
+param subnetBastionPrefix string = '10.1.0.64/26'
+param vNetSpokePrefix string = '10.1.4.0/24'
+param subnetSpokeName string = 'Subnet-1'
+param subnetSpokePrefix string = '10.1.4.0/24'
+
+@description('Security Type of the Virtual Machine.')
+@allowed([
+  'Standard'
+  'TrustedLaunch'
+])
+param securityType string = 'TrustedLaunch'
+
 @description('Name of ER Gateway resource')
 param erGatewayName string = 'er-gw'
 
@@ -69,24 +81,11 @@ param erGatewayName string = 'er-gw'
 ])
 param gatewaySku string = 'Standard'
 
-param vNetHubPrefix string = '10.1.0.0/22'
-param subnetBastionPrefix string = '10.1.0.64/26'
-param vNetSpokePrefix string = '10.1.4.0/24'
-param subnetSpokeName string = 'Subnet-1'
-param subnetSpokePrefix string = '10.1.4.0/24'
-
-@description('Security Type of the Virtual Machine.')
-@allowed([
-  'Standard'
-  'TrustedLaunch'
-])
-param securityType string = 'TrustedLaunch'
+@description('Name of the ExpressRoute circuit')
+param erCircuitName string = 'er-ckt01'
 
 @description('ExpressRoute peering location')
 param erpeeringLocation string = 'Washington DC'
-
-@description('Name of the ExpressRoute circuit')
-param erCircuitName string = 'er-ckt01'
 
 @description('Name of the ExpressRoute provider')
 param serviceProviderName string = 'Megaport'

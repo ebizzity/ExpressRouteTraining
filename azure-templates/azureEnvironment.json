@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "5365454586599790672"
+      "templateHash": "15753088097321212122"
     }
   },
   "parameters": {
@@ -58,13 +58,6 @@
         "description": "The administrator password"
       }
     },
-    "gatewaySubnetIpPrefix": {
-      "type": "string",
-      "defaultValue": "10.1.0.0/26",
-      "metadata": {
-        "description": "Gateway subnet IP prefix MUST be within vnet IP prefix address space"
-      }
-    },
     "bastionHostName": {
       "type": "string",
       "defaultValue": "bastion2",
@@ -104,31 +97,16 @@
         "description": "The Windows version for the VM. This will pick a fully patched image of this given Windows version."
       }
     },
-    "erGatewayName": {
-      "type": "string",
-      "defaultValue": "er-gw",
-      "metadata": {
-        "description": "Name of ER Gateway resource"
-      }
-    },
-    "gatewaySku": {
-      "type": "string",
-      "defaultValue": "Standard",
-      "allowedValues": [
-        "Standard",
-        "HighPerformance",
-        "UltraPerformance",
-        "ErGw1AZ",
-        "ErGw2AZ",
-        "ErGw3AZ"
-      ],
-      "metadata": {
-        "description": "ExpressRoute Gateway SKU"
-      }
-    },
     "vNetHubPrefix": {
       "type": "string",
       "defaultValue": "10.1.0.0/22"
+    },
+    "gatewaySubnetIpPrefix": {
+      "type": "string",
+      "defaultValue": "10.1.0.0/26",
+      "metadata": {
+        "description": "Gateway subnet IP prefix MUST be within vnet IP prefix address space"
+      }
     },
     "subnetBastionPrefix": {
       "type": "string",
@@ -157,11 +135,26 @@
         "description": "Security Type of the Virtual Machine."
       }
     },
-    "erpeeringLocation": {
+    "erGatewayName": {
       "type": "string",
-      "defaultValue": "Washington DC",
+      "defaultValue": "er-gw",
       "metadata": {
-        "description": "ExpressRoute peering location"
+        "description": "Name of ER Gateway resource"
+      }
+    },
+    "gatewaySku": {
+      "type": "string",
+      "defaultValue": "Standard",
+      "allowedValues": [
+        "Standard",
+        "HighPerformance",
+        "UltraPerformance",
+        "ErGw1AZ",
+        "ErGw2AZ",
+        "ErGw3AZ"
+      ],
+      "metadata": {
+        "description": "ExpressRoute Gateway SKU"
       }
     },
     "erCircuitName": {
@@ -169,6 +162,13 @@
       "defaultValue": "er-ckt01",
       "metadata": {
         "description": "Name of the ExpressRoute circuit"
+      }
+    },
+    "erpeeringLocation": {
+      "type": "string",
+      "defaultValue": "Washington DC",
+      "metadata": {
+        "description": "ExpressRoute peering location"
       }
     },
     "serviceProviderName": {
