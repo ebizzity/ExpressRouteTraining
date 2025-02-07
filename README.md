@@ -73,7 +73,36 @@ Architecture:
         GigabitEthernet3       172.16.16.5     YES manual up                    up
         megaport-mve-97884#
         ```
-    9. Check MSEE Reachability from CSR 8kv:
+       
+**Step #3 - Configure Azure ExpressRoute and Connect to ERGW**  
+
+
+1. Inspect the newly-deployed ExpressRoute ciruit created from the template above.
+    
+    ![unprovisioned circuit](images/er-ckt-cleanedup.png)
+
+    Notice that we see a banner message indicating that we need to provision the circuit with the provider.
+
+    Provide your service key to your instructor.
+
+2. Instructor to provision ER Circuit.
+    - Instructor to login to Megaport portal and create connection to MVE
+    - Click Add Connection
+        - ![Megaport-ER-connection-2](images/megaport-deploy-er-ckt.png)
+    - Choose Cloud Connection
+        - ![Megaport-ER-connection-1](images/megaport-deploy-er-ckt-1.png)
+    - Choose Microsoft Azure
+        - ![Megaport-ER-connection-2](images/megaport-deploy-er-ckt-2.png)
+    - Enter the Service Key provided by student
+        - ![Megaport-ER-connection-3](images/megaport-deploy-er-ckt-3.png)
+    - Once they key is validated, Choose the Primary link of the circuit
+        - ![Megaport-ER-connection-4](images/megaport-deploy-er-ckt-4.png)
+    - Finally choose the interface on the MVE where we will connect the circuit and enter the student's vlan id, click ok, and click order.  You will now see the circuit in deploying status.
+        - ![Megaport-ER-connection-5](images/megaport-deploy-er-ckt-5.png)
+        - ![Megaport-ER-connection-6](images/megaport-circuits-order.png)
+        - ![Megaport-ER-connection-7](images/megaport-circuits-deploying.png)
+
+3. Check MSEE reachability after circuit provisioning is completed.
 
         ```
         megaport-mve-97884#ping 172.16.16.2
@@ -88,14 +117,25 @@ Architecture:
         Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
         ```
     
-**Step #3 - Configure Azure ExpressRoute and Connect to ERGW**  
+4. Configure BGP on CSR to peer with MSEE routers.
+    - Log in to your Megaport Router and apply the following configuration.  Don't forget to enter configure mode! **Note:  you can copy and paste directly into the terminal**
+    
+    ```
+    router bgp 64620
+    bgp log-neighbor-changes
+    neighbor 10.20.2.62 remote-as 65515
+    neighbor 10.20.2.62 ebgp-multihop 255
+    neighbor 10.20.2.62 update-source Tunnel11
+    neighbor 172.16.16.2 remote-as 12076
+    neighbor 172.16.16.2 ebgp-multihop 255
+    neighbor 172.16.16.2 update-source GigabitEthernet2
+    neighbor 172.16.16.6 remote-as 12076
+    neighbor 172.16.16.6 ebgp-multihop 255
+    neighbor 172.16.16.6 update-source GigabitEthernet3
+    !
+    ```
 
-
-    
-    
-    
-    
-1. Check BGP Peering Status on CSR 8kv:
+5. Check BGP Peering Status on CSR 8kv:
 
         ```
         megaport-mve-97884#show ip bgp summ
@@ -108,8 +148,22 @@ Architecture:
         megaport-mve-97884#
         ```
 
-2. Check for Routes from Azure on CSR 8kv:
+6. At this point we are ready to connect the circuit to the ExpressRoute Gateway.  Perform the following steps:
+    - Navigate to the ExpressRoute Gateway deployed from the templates above
+    - Click Connections
+        - ![ER-GW-Connection-1](images/ergw.png) 
+    - Click Add
+        - ![ER-GW-Connection-2](images/er-connections-add.png) 
+    - Choose the resource group you are leveraging for this lab and choose ExpressRoute for the Connection type.
+        - ![ER-GW-Connection-3](images/er-connection-setup-0.png)
+    - For this lab, choose Standard Resiliency
+        - ![ER-GW-Connection-4](images/er-connection-setup-1.png)
+    Choose the ERGW, provide a name for the connection, choose the provisioned ER circuit and deploy.
+        - ![ER-GW-Connection-4](images/er-connection-setup-2.png)
 
+2. Check for Routes from Azure on CSR 8kv:
+    - Once the deployment for the connection has completed, we can go and check our received routes.  We should have routes for the Azure Hub, and the Azure spoke, from both the Primary and Secondary circuits.
+    
         ```
         megaport-mve-97884#show ip bgp
         BGP table version is 3, local router ID is 172.16.16.5
