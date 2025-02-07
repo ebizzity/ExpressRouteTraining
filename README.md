@@ -320,8 +320,53 @@ Architecture:
         - ![VPN-GW5](images/vpn-gw-add-connection-4.png)
 
     - Choose custom IPsec/IKE Policy and use the following values:
-    
+
         - ![VPN-GW6](images/vpn-gw-add-connection-5.png) 
+
+5. Check BGP status on the Megaport router
+    - Issue the following command on the router
+        ```
+        show ip bgp summary
+        ```
+    - Your output should look like this.  We're looking for the VPN Gateway peer to be Up.  We can see that below as 10.20.2.62 is Up for 11 seconds.
+
+    - ![VPN-BGP1](images/megaport-bgp-up-vpn.png) 
+
+    - We can also issue the following command to see all of the BGP routes.  We should now see routes from ExpressRoute and 10.20.0.0/22 coming from the Simulated On-Prem environment.
+        ```
+        show ip bgp
+        ```
+6. Test Connectivity between on-prem and Azure.  
+    - Login in to both Virtual Machines via Bastion.  Use the Username and Password you provided at the time of template deployment.
+    - Enable the rule to allow ICMPv4 inbound via the "Windows Defender Firewall with Advanced Security" configuration tool.
+    - Finally, ping and traceroute from each side to the VM on the other side.  We should see successful responses, feel free to test RDP or something else over the ER from one VM to another.
+        - Note: If there is no reachability between the machines at this point we need to troubleshoot.  Please raise your hand and share your screen.
+
+**Step #5 - Understand Monitoring and Insights capabilities of ExpressRoute**
+
+1. View the ER Circuit Topology by viewing the insights page 
+
+    - ![ER-Monitoring](images/er-ckt-insights-topology.png)
+
+2. Explore the different available metrics on the ExpressRoute circuit
+
+    - ![ER-Monitoring1](images/er-ckt-monitoring-metrics-1.png)
+    - ![ER-Monitoring2](images/er-ckt-monitoring-metrics-2.png)
+    - ![ER-Monitoring3](images/er-ckt-monitoring-metrics-3.png)
+    - ![ER-Monitoring4](images/er-ckt-monitoring-metrics-4.png)
+
+**Step #6 - Clean up**
+
+1. Navigate to the ExpressRoute Gateway, Remove the connection we created above.
+2. Navigate to your ExpressRoute circuit., Click on the Private peering's ellipsis and click delete.
+
+    - ![ER-Cleanup](images/er-ckt-cleanup.png)    
+
+3. Once your Private Peering configuration is deleted, inform your instructor so the circuit can be de-provisioned in the Megaport portal.
+
+4. Once the circuit is de-provisioned, it should go back to looking like it did at the beginning of this training.
+
+    - ![ER-Cleanup1](images/er-ckt-cleanedup.png)    
 
 **Cisco CSR 8kv configuration:**
 
