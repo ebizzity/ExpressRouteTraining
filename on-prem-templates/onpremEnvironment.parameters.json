@@ -38,9 +38,6 @@
     "adminUsername": {
       "value": "azureuser"
     },
-    "adminPassword": {
-      "value": "Ch@ngeMe1234!"
-    },
     "OSVersion": {
       "value": "2022-datacenter-azure-edition"
     },

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "17664746027183961876"
+      "templateHash": "17432987100713984619"
     }
   },
   "parameters": {
@@ -110,7 +110,7 @@
     },
     "adminPassword": {
       "type": "securestring",
-      "minLength": 12,
+      "defaultValue": "",
       "metadata": {
         "description": "Password for the Virtual Machine."
       }

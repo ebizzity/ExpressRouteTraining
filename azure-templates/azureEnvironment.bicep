@@ -17,9 +17,8 @@ param vmSize string = 'Standard_B2als_v2'
 param adminUsername string = 'azureuser'
 
 @description('The administrator password')
-@minLength(12)
 @secure()
-param adminPassword string
+param adminPassword string = ''
 
 @description('The name of the Azure Bastion host')
 param bastionHostName string = 'bastion2'

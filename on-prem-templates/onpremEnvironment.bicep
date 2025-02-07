@@ -48,9 +48,8 @@ param vpnType string = 'RouteBased'
 param adminUsername string = 'azureuser'
 
 @description('Password for the Virtual Machine.')
-@minLength(12)
 @secure()
-param adminPassword string 
+param adminPassword string = ''
 
 @description('The Windows version for the VM. This will pick a fully patched image of this given Windows version.')
 @allowed([

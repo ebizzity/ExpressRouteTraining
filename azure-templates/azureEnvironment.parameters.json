@@ -17,9 +17,6 @@
     "adminUsername": {
       "value": "azureuser"
     },
-    "adminPassword": {
-      "value": "Ch@ngeMe1234!"
-    },
     "gatewaySubnetIpPrefix": {
       "value": "10.1.0.0/26"
     },
