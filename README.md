@@ -1,12 +1,53 @@
-**Welcome to ExpressRoute hands-on Lab!**
+Welcome to ExpressRoute hands-on Lab!
+=====================================
+
+Table of Contents
+=================
+
+1. [Introduction](#1-introduction)
+
+    1.1. [Prerequisites](#11-prerequisites)
+
+    1.2. [Architecture](#12-architecture)
+
+2. [Pre-work](#2-prework)
+
+3. [Initial Configuration](#3-initial-router-configuration)
+
+4. [Configure Azure ExpressRoute and Connect to ExpressRoute Gateway](#4-configure-azure-expressroute-and-connect-to-ergw)
+
+5. [Build VPN Connection between On-Prem and Megaport](#5-build-vpn-connection-between-simulated-on-prem-environment-and-megaport)
+
+6. [Understand ExpressRoute Insights and Monitoring Capabilities](#6-understand-monitoring-and-insights-capabilities-of-expressroute)
+
+7. [Clean Up](#7-clean-up)
+
+8. [Appendix A - CSR Configuration](#8-appendix-a---cisco-csr-8kv-configuration)
+
+
+## 1. Introduction
 
 In this lab we will be deploying 2 Azure environments.  One environment will simulate our 'On-Prem' network, and one will be our Azure Hub and Spoke deployment.
 
 We will be provisioning an ExpressRoute circuit from Megaport, configuring a Cisco CSR 8000v router to bring up the circuit, and finally connecting it to Azure.  We will then configure a Site-to-Site VPN from the Cisco router at Megaport to connect our ExpressRoute to on-premise.
 
-Architecture:
+## 1.1 Prerequisites
+
+This lab assumes you have an Azure subscription where you can deploy an ExpressRoute Gateway, ExpressRoute circuit, VPN gateway, Virtual Networks and Virtual Machines and all supporting resources (Public IPs for the gateways and Azure Bastion)
+
+## 1.1.1. Helpful information to know ahead of time
+
+- [Azure Networking Basics](https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-overview)
+- [Azure Routing](https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview)
+- [Azure ExpressRoute](https://learn.microsoft.com/en-us/azure/expressroute/expressroute-introduction)
+- [Azure VPN Gateway](https://learn.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-about-vpngateways)
+- [Hub/Spoke Topology Concepts](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/traditional-azure-networking-topology)
+
+## 1.2 Architecture
 
 ![Network-Architecture](images/Network-Architecture.png)
+
+## 2. Pre-work
 
 **Step #1 - Deploy Simulated on-prem and Azure environments via templates**
   
@@ -18,7 +59,7 @@ Architecture:
    
    [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Febizzity%2FExpressRouteTraining%2Frefs%2Fheads%2Fmain%2Fazure-templates%2FazureEnvironment.json)
 
-**Step #2 - Create Megaport ExpressRoute and MVE**
+**Step #2 - Create Megaport ExpressRoute and MVE** (Instructor Only)
 
 1. Login to Megaport Portal
 2. Create MVE (Megaport Virtual Edge)
@@ -26,12 +67,16 @@ Architecture:
    2. Generate SSH Key
    3. Add Megaport Internet to Primary interfaces
 
-   This will provision for a few minutes, when completed we will be able to get our Megaport public IP address and use it to log in to the Cisco router
+        - This will provision for a few minutes, when completed we will be able to get our Megaport public IP address and use it to log in to the Cisco router
 
-   Megaport Public IP Picture
+        - Post-Deployment, get the public IP for each student's router and record it on a spreadsheet.
 
-   4. Copy SSH Key into ~\\.ssh folder
-   5. Login to Megaport MVE
+        - **TODO: Insert Megaport Public IP Picture**
+
+## 3. Initial Router Configuration
+   
+   1. Copy SSH Key into ~\\.ssh folder
+   2. Login to Megaport MVE
 
       ```
       ssh -i .ssh\sshkey mveadmin@<Megaport_Public_IP>
@@ -39,8 +84,8 @@ Architecture:
       megaport-mve-97884#
       ```
 
-    6. Now we can begin configuring the router
-    7. Let's begin with checking our interfaces
+    3. Now we can begin configuring the router
+    4. Let's begin with checking our interfaces
 
         ```
         megaport-mve-97884#show ip int brief
@@ -50,7 +95,7 @@ Architecture:
         GigabitEthernet3       unassigned      YES unset  administratively down down
         ```
 
-    8. Next let's enter configuration mode and define our ExpressRoute interfaces
+    5. Next let's enter configuration mode and define our ExpressRoute interfaces
 
         ```
         megaport-mve-97884#conf t
@@ -74,7 +119,7 @@ Architecture:
         megaport-mve-97884#
         ```
        
-**Step #3 - Configure Azure ExpressRoute and Connect to ERGW**  
+## 4. Configure Azure ExpressRoute and Connect to ERGW
 
 
 1. Inspect the newly-deployed ExpressRoute ciruit created from the template above.
@@ -198,7 +243,7 @@ Architecture:
         megaport-mve-97884#
         ```
 
-**Step #4 - Build VPN connection between Simulated On-Prem Environment and Megaport**
+## 5. Build VPN connection between Simulated On-Prem Environment and Megaport
 
 1. We need some information from the VPN Gateway.  Go to the Azure portal and get the Public IP Address we are going to leverage for the connection as well as the BGP peering IP address.
 
@@ -342,7 +387,7 @@ Architecture:
     - Finally, ping and traceroute from each side to the VM on the other side.  We should see successful responses, feel free to test RDP or something else over the ER from one VM to another.
         - Note: If there is no reachability between the machines at this point we need to troubleshoot.  Please raise your hand and share your screen.
 
-**Step #5 - Understand Monitoring and Insights capabilities of ExpressRoute**
+## 6. Understand Monitoring and Insights capabilities of ExpressRoute
 
 1. View the ER Circuit Topology by viewing the insights page 
 
@@ -355,7 +400,7 @@ Architecture:
     - ![ER-Monitoring3](images/er-ckt-monitoring-metrics-3.png)
     - ![ER-Monitoring4](images/er-ckt-monitoring-metrics-4.png)
 
-**Step #6 - Clean up**
+## 7. Clean up
 
 1. Navigate to the ExpressRoute Gateway, Remove the connection we created above.
 2. Navigate to your ExpressRoute circuit., Click on the Private peering's ellipsis and click delete.
@@ -368,7 +413,7 @@ Architecture:
 
     - ![ER-Cleanup1](images/er-ckt-cleanedup.png)    
 
-**Cisco CSR 8kv configuration:**
+## 8. Appendix A - Cisco CSR 8kv configuration
 
 ```
 crypto ikev2 proposal Azure-Proposal
