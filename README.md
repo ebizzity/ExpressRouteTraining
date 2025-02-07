@@ -158,12 +158,12 @@ Architecture:
         - ![ER-GW-Connection-3](images/er-connection-setup-0.png)
     - For this lab, choose Standard Resiliency
         - ![ER-GW-Connection-4](images/er-connection-setup-1.png)
-    Choose the ERGW, provide a name for the connection, choose the provisioned ER circuit and deploy.
+    - Choose the ERGW, provide a name for the connection, choose the provisioned ER circuit and deploy.
         - ![ER-GW-Connection-4](images/er-connection-setup-2.png)
 
 2. Check for Routes from Azure on CSR 8kv:
     - Once the deployment for the connection has completed, we can go and check our received routes.  We should have routes for the Azure Hub, and the Azure spoke, from both the Primary and Secondary circuits.
-    
+
         ```
         megaport-mve-97884#show ip bgp
         BGP table version is 3, local router ID is 172.16.16.5
