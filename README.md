@@ -10,11 +10,11 @@ Architecture:
 
 **Step #1 - Deploy Simulated on-prem and Azure environments via templates**
   
-1. On-Prem
+1. **On-Prem**
    
    [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Febizzity%2FExpressRouteTraining%2Frefs%2Fheads%2Fmain%2Fon-prem-templates%2FonpremEnvironment.json)
  
-2. Azure
+2. **Azure**
    
    [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Febizzity%2FExpressRouteTraining%2Frefs%2Fheads%2Fmain%2Fazure-templates%2FazureEnvironment.json)
 
@@ -30,7 +30,7 @@ Architecture:
 
    Megaport Public IP Picture
 
-   4. Copy SSH Key into ~\.ssh folder
+   4. Copy SSH Key into ~\\.ssh folder
    5. Login to Megaport MVE
 
       ```
@@ -42,13 +42,13 @@ Architecture:
     6. Now we can begin configuring the router
     7. Let's begin with checking our interfaces
 
-    ```
-    megaport-mve-97884#show ip int brief
-    Interface              IP-Address      OK? Method Status                Protocol
-    GigabitEthernet1       x.x.x.x         YES DHCP   up                    up
-    GigabitEthernet2       unassigned      YES unset  administratively down down
-    GigabitEthernet3       unassigned      YES unset  administratively down down
-    ```
+        ```
+        megaport-mve-97884#show ip int brief
+        Interface              IP-Address      OK? Method Status                Protocol
+        GigabitEthernet1       x.x.x.x         YES DHCP   up                    up
+        GigabitEthernet2       unassigned      YES unset  administratively down down
+        GigabitEthernet3       unassigned      YES unset  administratively down down
+        ```
 
     8. Next let's enter configuration mode and define our ExpressRoute interfaces
 
@@ -87,7 +87,15 @@ Architecture:
         !!!!!
         Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
         ```
-    10. Check BGP Peering Status on CSR 8kv:
+    
+**Step #3 - Configure Azure ExpressRoute and Connect to ERGW**  
+
+
+    
+    
+    
+    
+1. Check BGP Peering Status on CSR 8kv:
 
         ```
         megaport-mve-97884#show ip bgp summ
@@ -100,7 +108,7 @@ Architecture:
         megaport-mve-97884#
         ```
 
-    11. Check for Routes from Azure on CSR 8kv:
+2. Check for Routes from Azure on CSR 8kv:
 
         ```
         megaport-mve-97884#show ip bgp
