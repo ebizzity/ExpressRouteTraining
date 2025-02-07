@@ -88,15 +88,25 @@ Architecture:
 2. Instructor to provision ER Circuit.
     - Instructor to login to Megaport portal and create connection to MVE
     - Click Add Connection
+
         - ![Megaport-ER-connection-2](images/megaport-deploy-er-ckt.png)
+
     - Choose Cloud Connection
+
         - ![Megaport-ER-connection-1](images/megaport-deploy-er-ckt-1.png)
+
     - Choose Microsoft Azure
+
         - ![Megaport-ER-connection-2](images/megaport-deploy-er-ckt-2.png)
+
     - Enter the Service Key provided by student
+
         - ![Megaport-ER-connection-3](images/megaport-deploy-er-ckt-3.png)
+
     - Once they key is validated, Choose the Primary link of the circuit
+
         - ![Megaport-ER-connection-4](images/megaport-deploy-er-ckt-4.png)
+
     - Finally choose the interface on the MVE where we will connect the circuit and enter the student's vlan id, click ok, and click order.  You will now see the circuit in deploying status.
         - ![Megaport-ER-connection-5](images/megaport-deploy-er-ckt-5.png)
         - ![Megaport-ER-connection-6](images/megaport-circuits-order.png)
@@ -151,18 +161,24 @@ Architecture:
 6. At this point we are ready to connect the circuit to the ExpressRoute Gateway.  Perform the following steps:
     - Navigate to the ExpressRoute Gateway deployed from the templates above
     - Click Connections
+
         - ![ER-GW-Connection-1](images/ergw.png) 
+
     - Click Add
         - ![ER-GW-Connection-2](images/er-connections-add.png) 
+
     - Choose the resource group you are leveraging for this lab and choose ExpressRoute for the Connection type.
+
         - ![ER-GW-Connection-3](images/er-connection-setup-0.png)
     - For this lab, choose Standard Resiliency
+
         - ![ER-GW-Connection-4](images/er-connection-setup-1.png)
     - Choose the ERGW, provide a name for the connection, choose the provisioned ER circuit and deploy.
+
         - ![ER-GW-Connection-4](images/er-connection-setup-2.png)
 
-2. Check for Routes from Azure on CSR 8kv:
-    - Once the deployment for the connection has completed, we can go and check our received routes.  We should have routes for the Azure Hub, and the Azure spoke, from both the Primary and Secondary circuits.
+7. Check for Routes from Azure on CSR 8kv:
+    - Once the deployment for the connection has completed, we can go and check our received routes.  We should have routes for the Azure Hub, and the Azure Spoke, from both the Primary and Secondary circuits.
 
         ```
         megaport-mve-97884#show ip bgp
@@ -181,6 +197,131 @@ Architecture:
         *>                    172.16.16.6                            0 12076 i
         megaport-mve-97884#
         ```
+
+**Step #4 - Build VPN connection between Simulated On-Prem Environment and Megaport**
+
+1. We need some information from the VPN Gateway.  Go to the Azure portal and get the Public IP Address we are going to leverage for the connection as well as the BGP peering IP address.
+
+    - Navigate to the VPN Gateway deployed from the templates above
+        - Click Properties
+
+            - ![VPN-GW](images/vpn-gw.png)
+
+            - Click Configure BGP
+
+            - ![VPN-GW1](images/vpn-gw-add-connection-6-bgp.png) 
+
+                - Note the IP Addresses down as we will need them in the next step
+
+2. Log in to the Megaport CSR and enter the following configuration.  **NOTE: Be sure to update the placeholders with the appropriate IP addresses!**
+
+    ```
+    crypto ikev2 proposal Azure-Proposal
+    encryption aes-cbc-256
+    integrity sha1 sha256 sha384 sha512
+    group 14 15 16
+    crypto ikev2 proposal On-Prem-Ikev2-Proposal
+    encryption aes-cbc-256
+    integrity sha1 sha256 sha384 sha512
+    group 14 15 16
+    !
+    crypto ikev2 policy Azure-Policy
+    match address local <MEGAPORT_PUBLIC_IP>
+    proposal Azure-Proposal
+    !
+    !
+    crypto ikev2 profile Azure-Profile
+    match address local <MEGAPORT_PUBLIC_IP>
+    match identity remote address <VPN_GATEWAY_PUBLIC_IP> 255.255.255.255
+    authentication remote pre-share key VPNDEMO!
+    authentication local pre-share key VPNDEMO!
+    lifetime 28800
+    dpd 10 5 on-demand
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    crypto ipsec transform-set Azure-TransformSet esp-aes 256 esp-sha256-hmac
+    mode tunnel
+    !
+    crypto ipsec profile Azure-IPsecProfile
+    set transform-set Azure-TransformSet
+    set ikev2-profile Azure-Profile
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    interface Tunnel11
+    ip address 172.16.15.1 255.255.255.252
+    ip tcp adjust-mss 1350
+    tunnel source GigabitEthernet1
+    tunnel mode ipsec ipv4
+    tunnel destination <VPN_GATEWAY_PUBLIC_IP>
+    tunnel protection ipsec profile Azure-IPsecProfile
+    !
+    ```
+
+3. Configure BGP on the CSR to exchange routes between On-prem and Azure.
+
+    ```
+    router bgp 64620
+    neighbor 10.20.2.62 remote-as 65515
+    neighbor 10.20.2.62 ebgp-multihop 255
+    neighbor 10.20.2.62 update-source Tunnel11
+    ```
+
+4. Build VPN connection to Megaport in Azure
+    - Create a net-new Local Network Gateway to represent the on-prem network in Azure.
+
+    - Click Create
+
+        - ![VPN-LNG1](images/vpn-lng-create-1.png) 
+
+    - Choose the appropriate Resource Group, provide a name and the Public IP Address of the Megaport Router
+
+        - ![VPN-LNG1](images/vpn-lng-create-1.5.png)
+
+    - Configure BGP Settings
+
+        - ![VPN-LNG1](images/vpn-lng-create-2.png)  
+
+    - Now, Navigate to the VPN Gateway, click Connections
+
+        - ![VPN-GW1](images/vpn-gw.png) 
+        - ![VPN-GW2](images/vpn-gw-add-connection-1.png) 
+
+    - Click Add
+
+        - ![VPN-GW3](images/vpn-gw-add-connection-2.png) 
+
+    - Choose Site-to-Site (IPSec) and the Connection Type and provide a name for the connection
+
+        - ![VPN-GW4](images/vpn-gw-add-connection-3.png)
+
+    - Choose the VPN Gateway
+    - Choose the Local Network Gateway created above
+    - Provide the PSK from the config file above 
+
+        - ![VPN-GW5](images/vpn-gw-add-connection-4.png)
+
+    - Choose custom IPsec/IKE Policy and use the following values:
+    
+        - ![VPN-GW6](images/vpn-gw-add-connection-5.png) 
 
 **Cisco CSR 8kv configuration:**
 
