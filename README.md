@@ -78,46 +78,69 @@ This lab assumes you have an Azure subscription where you can deploy an ExpressR
    1. Copy SSH Key into ~\\.ssh folder
    2. Login to Megaport MVE
 
-      ```
-      ssh -i .ssh\sshkey mveadmin@<Megaport_Public_IP>
-      
-      megaport-mve-97884#
-      ```
-
-    3. Now we can begin configuring the router
-    4. Let's begin with checking our interfaces
-
         ```
-        megaport-mve-97884#show ip int brief
-        Interface              IP-Address      OK? Method Status                Protocol
-        GigabitEthernet1       x.x.x.x         YES DHCP   up                    up
-        GigabitEthernet2       unassigned      YES unset  administratively down down
-        GigabitEthernet3       unassigned      YES unset  administratively down down
-        ```
+        ssh -i .ssh\sshkey mveadmin@<Megaport_Public_IP>
 
-    5. Next let's enter configuration mode and define our ExpressRoute interfaces
-
-        ```
-        megaport-mve-97884#conf t
-        Enter configuration commands, one per line.  End with CNTL/Z.
-        megaport-mve-97884(config)#interface gi2
-        megaport-mve-97884(config-if)#ip address 172.16.16.1 255.255.255.252
-        megaport-mve-97884(config-if)#no shut
-        megaport-mve-97884(config-if)#vlan-id dot1q 800
-        megaport-mve-97884(config-if-vlan-id)#interface gi3
-        megaport-mve-97884(config-if)#ip address 172.16.16.5 255.255.255.252
-        megaport-mve-97884(config-if)#no shut
-        megaport-mve-97884(config-if)#vlan-id dot1q 800
-        megaport-mve-97884(config-if-vlan-id)#^Z
-        megaport-mve-97884#
-
-        megaport-mve-97884#show ip int brief
-        Interface              IP-Address      OK? Method Status                Protocol
-        GigabitEthernet1       x.x.x.x         YES DHCP   up                    up
-        GigabitEthernet2       172.16.16.1     YES manual up                    up
-        GigabitEthernet3       172.16.16.5     YES manual up                    up
         megaport-mve-97884#
         ```
+
+3. Now we can begin configuring the route
+4. Let's begin with checking our interfaces
+
+    ```
+    show ip int brief
+    ```
+    You should see output like the following:
+    ```
+    megaport-mve-97884#show ip int brief
+    Interface              IP-Address      OK? Method Status                Protocol
+    GigabitEthernet1       x.x.x.x         YES DHCP   up                    up
+    GigabitEthernet2       unassigned      YES unset  administratively down down
+    GigabitEthernet3       unassigned      YES unset  administratively down down
+    ```
+
+5. Next let's enter configuration mode and define our ExpressRoute interfaces
+
+    ```
+    conf t
+    ```
+    Paste the following configuration:
+    ```
+    interface gi2
+    ip address 172.16.16.1 255.255.255.252
+    no shut
+    vlan-id dot1q 800
+    interface gi3
+    ip address 172.16.16.5 255.255.255.252
+    no shut
+    vlan-id dot1q 800
+    ```
+    Press Ctrl-Z
+
+    Your experience should resemble the following:
+    ```
+    megaport-mve-97884#conf t
+    Enter configuration commands, one per line.  End with CNTL/Z.
+    megaport-mve-97884(config)#interface gi2
+    megaport-mve-97884(config-if)#ip address 172.16.16.1 255.255.255.252
+    megaport-mve-97884(config-if)#no shut
+    megaport-mve-97884(config-if)#vlan-id dot1q 800
+    megaport-mve-97884(config-if-vlan-id)#interface gi3
+    megaport-mve-97884(config-if)#ip address 172.16.16.5 255.255.255.252
+    megaport-mve-97884(config-if)#no shut
+    megaport-mve-97884(config-if)#vlan-id dot1q 800
+    megaport-mve-97884(config-if-vlan-id)#^Z
+    megaport-mve-97884#
+
+    Finally, check the interfaces and ensure they came up:
+
+    megaport-mve-97884#show ip int brief
+    Interface              IP-Address      OK? Method Status                Protocol
+    GigabitEthernet1       x.x.x.x         YES DHCP   up                    up
+    GigabitEthernet2       172.16.16.1     YES manual up                    up
+    GigabitEthernet3       172.16.16.5     YES manual up                    up
+    megaport-mve-97884#
+    ```
        
 ## 4. Configure Azure ExpressRoute and Connect to ERGW
 
@@ -157,7 +180,15 @@ This lab assumes you have an Azure subscription where you can deploy an ExpressR
         - ![Megaport-ER-connection-6](images/megaport-circuits-order.png)
         - ![Megaport-ER-connection-7](images/megaport-circuits-deploying.png)
 
-3. Check MSEE reachability after circuit provisioning is completed.
+3. Provision the ER Private Peering
+
+    1. Navigate to the ER circuit deployed from the template. 
+        - Notice that the Private Peering is 'Not Provisioned'
+    2. Click on the Private peering.
+        - Configure the Peer ASN, Primary and Secondary Subnets, and the VLAN ID to match our Megaport router configuration.
+        - ![ER-PeeringSettings](images/er-peering-settings.png)
+
+3. Check MSEE reachability after peering provisioning is completed.
 
         ```
         megaport-mve-97884#ping 172.16.16.2
@@ -178,9 +209,6 @@ This lab assumes you have an Azure subscription where you can deploy an ExpressR
     ```
     router bgp 64620
     bgp log-neighbor-changes
-    neighbor 10.20.2.62 remote-as 65515
-    neighbor 10.20.2.62 ebgp-multihop 255
-    neighbor 10.20.2.62 update-source Tunnel11
     neighbor 172.16.16.2 remote-as 12076
     neighbor 172.16.16.2 ebgp-multihop 255
     neighbor 172.16.16.2 update-source GigabitEthernet2
@@ -192,16 +220,19 @@ This lab assumes you have an Azure subscription where you can deploy an ExpressR
 
 5. Check BGP Peering Status on CSR 8kv:
 
-        ```
-        megaport-mve-97884#show ip bgp summ
-        BGP router identifier 172.16.16.5, local AS number 64620
-        BGP table version is 1, main routing table version 1
+    ```
+    show ip bgp summ
+    ```
+    ```
+    megaport-mve-97884#show ip bgp summ
+    BGP router identifier 172.16.16.5, local AS number 64620
+    BGP table version is 1, main routing table version 1
 
-        Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
-        172.16.16.2     4        12076       5       5        1    0    0 00:01:08        0
-        172.16.16.6     4        12076       4       2        1    0    0 00:00:19        0
-        megaport-mve-97884#
-        ```
+    Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+    172.16.16.2     4        12076       5       5        1    0    0 00:01:08        0
+    172.16.16.6     4        12076       4       2        1    0    0 00:00:19        0
+    megaport-mve-97884#
+    ```
 
 6. At this point we are ready to connect the circuit to the ExpressRoute Gateway.  Perform the following steps:
     - Navigate to the ExpressRoute Gateway deployed from the templates above
@@ -224,7 +255,9 @@ This lab assumes you have an Azure subscription where you can deploy an ExpressR
 
 7. Check for Routes from Azure on CSR 8kv:
     - Once the deployment for the connection has completed, we can go and check our received routes.  We should have routes for the Azure Hub, and the Azure Spoke, from both the Primary and Secondary circuits.
-
+        ```
+        show ip bgp
+        ```
         ```
         megaport-mve-97884#show ip bgp
         BGP table version is 3, local router ID is 172.16.16.5
@@ -262,10 +295,6 @@ This lab assumes you have an Azure subscription where you can deploy an ExpressR
 
     ```
     crypto ikev2 proposal Azure-Proposal
-    encryption aes-cbc-256
-    integrity sha1 sha256 sha384 sha512
-    group 14 15 16
-    crypto ikev2 proposal On-Prem-Ikev2-Proposal
     encryption aes-cbc-256
     integrity sha1 sha256 sha384 sha512
     group 14 15 16
