@@ -391,6 +391,7 @@ This lab assumes you have an Azure subscription where you can deploy an ExpressR
     - Choose the VPN Gateway
     - Choose the Local Network Gateway created above
     - Provide the PSK from the config file above 
+    - Click 'Enable BGP'
 
         - ![VPN-GW5](images/vpn-gw-add-connection-4.png)
 
