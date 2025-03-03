@@ -131,9 +131,10 @@ This lab assumes you have an Azure subscription where you can deploy an ExpressR
     megaport-mve-97884(config-if)#vlan-id dot1q 800
     megaport-mve-97884(config-if-vlan-id)#^Z
     megaport-mve-97884#
+    ```
 
     Finally, check the interfaces and ensure they came up:
-
+    ```
     megaport-mve-97884#show ip int brief
     Interface              IP-Address      OK? Method Status                Protocol
     GigabitEthernet1       x.x.x.x         YES DHCP   up                    up
