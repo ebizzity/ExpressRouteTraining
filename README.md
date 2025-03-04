@@ -71,8 +71,6 @@ This lab assumes you have an Azure subscription where you can deploy an ExpressR
 
         - Post-Deployment, get the public IP for each student's router and record it on a spreadsheet.
 
-        - **TODO: Insert Megaport Public IP Picture**
-
 ## 3. Initial Router Configuration
    
    1. Copy SSH Key into ~\\.ssh folder
@@ -106,32 +104,24 @@ This lab assumes you have an Azure subscription where you can deploy an ExpressR
     ```
     Paste the following configuration:
     ```
-    interface gi2
+    interface GigabitEthernet2
     ip address 172.16.16.1 255.255.255.252
-    no shut
+    negotiation auto
     vlan-id dot1q 800
-    interface gi3
+    !
+    bfd interval 300 min_rx 300 multiplier 3
+    no shut
+    !
+    interface GigabitEthernet3
     ip address 172.16.16.5 255.255.255.252
-    no shut
+    negotiation auto
     vlan-id dot1q 800
+    !
+    bfd interval 300 min_rx 300 multiplier 3
+    no shut
+    !
     ```
     Press Ctrl-Z
-
-    Your experience should resemble the following:
-    ```
-    megaport-mve-97884#conf t
-    Enter configuration commands, one per line.  End with CNTL/Z.
-    megaport-mve-97884(config)#interface gi2
-    megaport-mve-97884(config-if)#ip address 172.16.16.1 255.255.255.252
-    megaport-mve-97884(config-if)#no shut
-    megaport-mve-97884(config-if)#vlan-id dot1q 800
-    megaport-mve-97884(config-if-vlan-id)#interface gi3
-    megaport-mve-97884(config-if)#ip address 172.16.16.5 255.255.255.252
-    megaport-mve-97884(config-if)#no shut
-    megaport-mve-97884(config-if)#vlan-id dot1q 800
-    megaport-mve-97884(config-if-vlan-id)#^Z
-    megaport-mve-97884#
-    ```
 
     Finally, check the interfaces and ensure they came up:
     ```
@@ -143,7 +133,7 @@ This lab assumes you have an Azure subscription where you can deploy an ExpressR
     megaport-mve-97884#
     ```
        
-## 4. Configure Azure ExpressRoute and Connect to ERGW
+## 4. Configure Azure ExpressRoute Private Peering and Connect to ERGW
 
 
 1. Inspect the newly-deployed ExpressRoute ciruit created from the template above.
@@ -213,9 +203,13 @@ This lab assumes you have an Azure subscription where you can deploy an ExpressR
     neighbor 172.16.16.2 remote-as 12076
     neighbor 172.16.16.2 ebgp-multihop 255
     neighbor 172.16.16.2 update-source GigabitEthernet2
+    neighbor 172.16.16.2 timers 5 20
+    neighbor 172.16.16.2 fall-over bfd
     neighbor 172.16.16.6 remote-as 12076
     neighbor 172.16.16.6 ebgp-multihop 255
     neighbor 172.16.16.6 update-source GigabitEthernet3
+    neighbor 172.16.16.6 timers 5 20
+    neighbor 172.16.16.6 fall-over bfd
     !
     ```
 
@@ -358,6 +352,7 @@ This lab assumes you have an Azure subscription where you can deploy an ExpressR
     neighbor 10.20.2.62 remote-as 65515
     neighbor 10.20.2.62 ebgp-multihop 255
     neighbor 10.20.2.62 update-source Tunnel11
+    neighbor 10.20.2.62 timers 5 20
     ```
 
 4. Build VPN connection to Megaport in Azure
@@ -451,19 +446,15 @@ crypto ikev2 proposal Azure-Proposal
  encryption aes-cbc-256
  integrity sha1 sha256 sha384 sha512
  group 14 15 16
-crypto ikev2 proposal On-Prem-Ikev2-Proposal
- encryption aes-cbc-256
- integrity sha1 sha256 sha384 sha512
- group 14 15 16
 !
 crypto ikev2 policy Azure-Policy
- match address local <MEGAPORT_PUBLIC_IP>
+ match address local <MEGAPORT_MVE_PIP>
  proposal Azure-Proposal
 !
 !
 crypto ikev2 profile Azure-Profile
- match address local <MEGAPORT_PUBLIC_IP>
- match identity remote address <VPN_GATEWAY_PUBLIC_IP> 255.255.255.255
+ match address local <MEGAPORT_MVE_PIP>
+ match identity remote address <VPNGW_PIP> 255.255.255.255
  authentication remote pre-share key VPNDEMO!
  authentication local pre-share key VPNDEMO!
  lifetime 28800
@@ -502,38 +493,43 @@ interface Tunnel11
  ip tcp adjust-mss 1350
  tunnel source GigabitEthernet1
  tunnel mode ipsec ipv4
- tunnel destination <VPN_GATEWAY_PUBLIC_IP>
+ tunnel destination <VPNGW_PIP>
  tunnel protection ipsec profile Azure-IPsecProfile
-!
-interface GigabitEthernet1
- ip address dhcp
- speed 10000
- no negotiation auto
 !
 interface GigabitEthernet2
  ip address 172.16.16.1 255.255.255.252
  negotiation auto
  vlan-id dot1q 800
  !
+ bfd interval 300 min_rx 300 multiplier 3
+ no shut
 !
 interface GigabitEthernet3
  ip address 172.16.16.5 255.255.255.252
  negotiation auto
  vlan-id dot1q 800
  !
+ bfd interval 300 min_rx 300 multiplier 3
+ no shut
 !
 router bgp 64620
  bgp log-neighbor-changes
  neighbor 10.20.2.62 remote-as 65515
  neighbor 10.20.2.62 ebgp-multihop 255
  neighbor 10.20.2.62 update-source Tunnel11
+ neighbor 10.20.2.62 timers 5 20
  neighbor 172.16.16.2 remote-as 12076
  neighbor 172.16.16.2 ebgp-multihop 255
  neighbor 172.16.16.2 update-source GigabitEthernet2
+ neighbor 172.16.16.2 timers 5 20
+ neighbor 172.16.16.2 fall-over bfd
  neighbor 172.16.16.6 remote-as 12076
  neighbor 172.16.16.6 ebgp-multihop 255
  neighbor 172.16.16.6 update-source GigabitEthernet3
+ neighbor 172.16.16.6 timers 5 20
+ neighbor 172.16.16.6 fall-over bfd
+!
 !
 ip route 10.20.2.62 255.255.255.255 Tunnel11
-
+!
 ```
