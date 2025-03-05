@@ -10,11 +10,11 @@ Table of Contents
 
     1.2. [Architecture](#12-architecture)
 
-2. [Pre-work](#2-prework)
+2. [Pre-work](#2-pre-work)
 
 3. [Initial Configuration](#3-initial-router-configuration)
 
-4. [Configure Azure ExpressRoute and Connect to ExpressRoute Gateway](#4-configure-azure-expressroute-and-connect-to-ergw)
+4. [Configure Azure ExpressRoute and Connect to ExpressRoute Gateway](#4-configure-azure-expressroute-private-peering-and-connect-to-ergw)
 
 5. [Build VPN Connection between On-Prem and Megaport](#5-build-vpn-connection-between-simulated-on-prem-environment-and-megaport)
 
