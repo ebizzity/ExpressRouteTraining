@@ -198,6 +198,18 @@ resource vmExtension 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' =
   }
 }
 
+resource EnableFWRules 'Microsoft.Compute/virtualMachines/runCommands@2024-07-01' = {
+  parent: vm
+  name: 'EnableFWRules'
+  location: location
+  properties: {
+    source:{
+      script: 'Enable-NetFirewallRule -DisplayName "Virtual Machine Monitoring (Echo Request - ICMPv4-In)"'
+    }
+    
+  }
+}
+
 resource publicIp 'Microsoft.Network/publicIPAddresses@2022-01-01' = {
   name: publicIpAddressName
   location: location
@@ -300,19 +312,20 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2024-05
       }
     ]
     sku:{
-      name:gatewaySku
-      tier:gatewaySku
+      name: gatewaySku
+      tier: gatewaySku
     }
     gatewayType: 'Vpn'
     vpnType: vpnType
-    enableBgp: true
+    enableBgp: true // BGP must be enabled
     activeActive: false
     bgpSettings:{
-      asn: 65515
+      asn: 65515 // Replace with your desired ASN
       bgpPeeringAddresses:[
         {
-          customBgpIpAddresses: [
-            '169.254.21.2'
+          ipconfigurationId: '${resourceId('Microsoft.Network/virtualNetworkGateways', vpnGatewayName)}/ipConfigurations/vnetGatewayConfig'
+          customBgpIpAddresses:[
+            '169.254.21.2' // Your APIPA custom BGP IP
           ]
         }
       ]

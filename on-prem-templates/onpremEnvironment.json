@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "15952773387348614407"
+      "templateHash": "12100980429392964994"
     }
   },
   "parameters": {
@@ -287,6 +287,20 @@
       ]
     },
     {
+      "type": "Microsoft.Compute/virtualMachines/runCommands",
+      "apiVersion": "2024-07-01",
+      "name": "[format('{0}/{1}', parameters('vmName'), 'EnableFWRules')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "source": {
+          "script": "Enable-NetFirewallRule -DisplayName \"Virtual Machine Monitoring (Echo Request - ICMPv4-In)\""
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+      ]
+    },
+    {
       "type": "Microsoft.Network/publicIPAddresses",
       "apiVersion": "2022-01-01",
       "name": "[variables('publicIpAddressName')]",
@@ -412,9 +426,9 @@
           "asn": 65515,
           "bgpPeeringAddresses": [
             {
+              "ipconfigurationId": "[format('{0}/ipConfigurations/vnetGatewayConfig', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('vpnGatewayName')))]",
               "customBgpIpAddresses": [
-                "169.254.21.2",
-                "169.254.22.2"
+                "169.254.21.2"
               ]
             }
           ]
