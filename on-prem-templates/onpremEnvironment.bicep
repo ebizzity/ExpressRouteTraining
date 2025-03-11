@@ -312,7 +312,7 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2024-05
       bgpPeeringAddresses:[
         {
           customBgpIpAddresses: [
-            '169.254.21.2','169.254.22.2'
+            '169.254.21.2'
           ]
         }
       ]
