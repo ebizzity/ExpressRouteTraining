@@ -305,6 +305,17 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2024-05
     }
     gatewayType: 'Vpn'
     vpnType: vpnType
-    enableBgp: false
+    enableBgp: true
+    activeActive: false
+    bgpSettings:{
+      asn: 65515
+      bgpPeeringAddresses:[
+        {
+          customBgpIpAddresses: [
+            '169.254.21.2','169.254.22.2'
+          ]
+        }
+      ]
+    }
   }
 }

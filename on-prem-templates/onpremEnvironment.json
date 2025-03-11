@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "17432987100713984619"
+      "templateHash": "15952773387348614407"
     }
   },
   "parameters": {
@@ -406,7 +406,19 @@
         },
         "gatewayType": "Vpn",
         "vpnType": "[parameters('vpnType')]",
-        "enableBgp": false
+        "enableBgp": true,
+        "activeActive": false,
+        "bgpSettings": {
+          "asn": 65515,
+          "bgpPeeringAddresses": [
+            {
+              "customBgpIpAddresses": [
+                "169.254.21.2",
+                "169.254.22.2"
+              ]
+            }
+          ]
+        }
       },
       "dependsOn": [
         "[resourceId('Microsoft.Network/publicIPAddresses', variables('gatewayPublicIpAddressName'))]",
