@@ -340,6 +340,18 @@ resource vmExtension 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' =
   }
 }
 
+resource EnableFWRules 'Microsoft.Compute/virtualMachines/runCommands@2024-07-01' = {
+  parent: vm
+  name: 'EnableFWRules'
+  location: location
+  properties: {
+    source:{
+      script: 'Enable-NetFirewallRule -DisplayName "Virtual Machine Monitoring (Echo Request - ICMPv4-In)"'
+    }
+    
+  }
+}
+
 resource gatewayPublicIp 'Microsoft.Network/publicIPAddresses@2022-01-01' = {
   name: gatewayPublicIpAddressName
   location: location
