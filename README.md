@@ -280,8 +280,6 @@ This lab assumes you have an Azure subscription where you can deploy an ExpressR
 
             - ![VPN-GW](images/vpn-gw.png)
 
-            - Click Configure BGP
-
             - ![VPN-GW1](images/vpn-gw-add-connection-6-bgp.png) 
 
                 - Note the IP Addresses down as we will need them in the next step
