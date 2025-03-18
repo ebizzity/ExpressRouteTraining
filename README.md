@@ -280,8 +280,6 @@ This lab assumes you have an Azure subscription where you can deploy an ExpressR
 
             - ![VPN-GW](images/vpn-gw.png)
 
-            - Click Configure BGP
-
             - ![VPN-GW1](images/vpn-gw-add-connection-6-bgp.png) 
 
                 - Note the IP Addresses down as we will need them in the next step
@@ -336,7 +334,7 @@ This lab assumes you have an Azure subscription where you can deploy an ExpressR
     !
     !
     interface Tunnel11
-    ip address 172.16.15.1 255.255.255.252
+    ip address 169.254.21.1 255.255.255.252
     ip tcp adjust-mss 1350
     tunnel source GigabitEthernet1
     tunnel mode ipsec ipv4
@@ -349,10 +347,10 @@ This lab assumes you have an Azure subscription where you can deploy an ExpressR
 
     ```
     router bgp 64620
-    neighbor 10.20.2.62 remote-as 65515
-    neighbor 10.20.2.62 ebgp-multihop 255
-    neighbor 10.20.2.62 update-source Tunnel11
-    neighbor 10.20.2.62 timers 5 20
+    neighbor 169.254.21.2 remote-as 65515
+    neighbor 169.254.21.2 ebgp-multihop 255
+    neighbor 169.254.21.2 update-source Tunnel11
+    neighbor 169.254.21.2 timers 5 20
     ```
 
 4. Build VPN connection to Megaport in Azure
@@ -489,7 +487,7 @@ crypto ipsec profile Azure-IPsecProfile
 !
 !
 interface Tunnel11
- ip address 172.16.15.1 255.255.255.252
+ ip address 169.254.21.1 255.255.255.252
  ip tcp adjust-mss 1350
  tunnel source GigabitEthernet1
  tunnel mode ipsec ipv4
@@ -514,10 +512,10 @@ interface GigabitEthernet3
 !
 router bgp 64620
  bgp log-neighbor-changes
- neighbor 10.20.2.62 remote-as 65515
- neighbor 10.20.2.62 ebgp-multihop 255
- neighbor 10.20.2.62 update-source Tunnel11
- neighbor 10.20.2.62 timers 5 20
+ neighbor 169.254.21.2 remote-as 65515
+ neighbor 169.254.21.2 ebgp-multihop 255
+ neighbor 169.254.21.2 update-source Tunnel11
+ neighbor 169.254.21.2 timers 5 20
  neighbor 172.16.16.2 remote-as 12076
  neighbor 172.16.16.2 ebgp-multihop 255
  neighbor 172.16.16.2 update-source GigabitEthernet2
@@ -529,7 +527,5 @@ router bgp 64620
  neighbor 172.16.16.6 timers 5 20
  neighbor 172.16.16.6 fall-over bfd
 !
-!
-ip route 10.20.2.62 255.255.255.255 Tunnel11
 !
 ```
