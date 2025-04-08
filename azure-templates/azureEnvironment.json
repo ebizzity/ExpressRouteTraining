@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "400394058119619355"
+      "templateHash": "15609101216994333585"
     }
   },
   "parameters": {
@@ -481,6 +481,20 @@
               "maaTenantName": "[variables('maaTenantName')]"
             }
           }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/runCommands",
+      "apiVersion": "2024-07-01",
+      "name": "[format('{0}/{1}', parameters('vmName'), 'EnableFWRules')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "source": {
+          "script": "Enable-NetFirewallRule -DisplayName \"Virtual Machine Monitoring (Echo Request - ICMPv4-In)\""
         }
       },
       "dependsOn": [
