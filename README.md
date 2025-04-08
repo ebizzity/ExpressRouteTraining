@@ -75,9 +75,10 @@ This lab assumes you have an Azure subscription where you can deploy an ExpressR
    
    1. Copy SSH Key into ~\\.ssh folder
    2. Login to Megaport MVE
+   3. cd back to ~
 
         ```
-        ssh -i .ssh\sshkey mveadmin@<Megaport_Public_IP>
+        ssh -i .\.ssh\erlabkey.pem mveadmin@<Megaport_Public_IP>
 
         megaport-mve-97884#
         ```
@@ -142,7 +143,7 @@ This lab assumes you have an Azure subscription where you can deploy an ExpressR
 
     Notice that we see a banner message indicating that we need to provision the circuit with the provider.
 
-    Provide your service key to your instructor.
+    Provide your service key to your instructor.  It is located right below the Bandwidth section in the Overview blade for the circuit.
 
 2. Instructor to provision ER Circuit.
     - Instructor to login to Megaport portal and create connection to MVE
