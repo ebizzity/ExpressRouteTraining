@@ -284,7 +284,7 @@ This lab assumes you have an Azure subscription where you can deploy an ExpressR
 1. We need some information from the VPN Gateway.  Go to the Azure portal and get the Public IP Address we are going to leverage for the connection as well as the BGP peering IP address.
 
     - Navigate to the VPN Gateway deployed from the templates above
-        - Click Properties
+        - Click Configuration
 
             - ![VPN-GW](images/vpn-gw.png)
 
@@ -292,7 +292,11 @@ This lab assumes you have an Azure subscription where you can deploy an ExpressR
 
                 - Note the IP Addresses down as we will need them in the next step
 
-2. Log in to the Megaport CSR and enter the following configuration.  **NOTE: Be sure to update the placeholders with the appropriate IP addresses!**
+2. Log in to the Megaport MVE and enter the following configuration.  **NOTE: Be sure to update the placeholders with the appropriate IP addresses!**
+
+    ```
+    conf t
+    ```
 
     ```
     crypto ikev2 proposal Azure-Proposal
@@ -351,7 +355,7 @@ This lab assumes you have an Azure subscription where you can deploy an ExpressR
     !
     ```
 
-3. Configure BGP on the CSR to exchange routes between On-prem and Azure.
+3. Configure BGP on the MVE to exchange routes between On-prem and Azure.
 
     ```
     router bgp 64620
@@ -414,8 +418,7 @@ This lab assumes you have an Azure subscription where you can deploy an ExpressR
         show ip bgp
         ```
 6. Test Connectivity between on-prem and Azure.  
-    - Login in to both Virtual Machines via Bastion.  Use the Username and Password you provided at the time of template deployment.
-    - Enable the rule to allow ICMPv4 inbound via the "Windows Defender Firewall with Advanced Security" configuration tool.
+    - Login in to both Virtual Machines via Bastion.  Use the Username and Password you provided at the time of template deployment. (Default Username: azureuser)
     - Finally, ping and traceroute from each side to the VM on the other side.  We should see successful responses, feel free to test RDP or something else over the ER from one VM to another.
         - Note: If there is no reachability between the machines at this point we need to troubleshoot.  Please raise your hand and share your screen.
 
