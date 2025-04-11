@@ -199,6 +199,10 @@ This lab assumes you have an Azure subscription where you can deploy an ExpressR
     - Log in to your Megaport Router and apply the following configuration.  Don't forget to enter configure mode! **Note:  you can copy and paste directly into the terminal**
     
     ```
+    conf t
+    ```
+
+    ```
     router bgp 64620
     bgp log-neighbor-changes
     neighbor 172.16.16.2 remote-as 12076
@@ -212,6 +216,9 @@ This lab assumes you have an Azure subscription where you can deploy an ExpressR
     neighbor 172.16.16.6 timers 5 20
     neighbor 172.16.16.6 fall-over bfd
     !
+    ```
+    ```
+    Press CTRL-Z or type exit
     ```
 
 5. Check BGP Peering Status on CSR 8kv:
